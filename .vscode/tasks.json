@@ -30,8 +30,7 @@
     "fileLocation": [
       "relative",
       "${workspaceRoot}",
-      "${workspaceRoot}/Source/KingdomClient/model/",
-      "${workspaceRoot}/Source/KingdomClient/"
+      "${workspaceRoot}/Source/PlatformerGame/"
     ],
     "severity": "error",
     "pattern": {
