@@ -1,6 +1,6 @@
 # NimPlatformerGame
 
-This repo contains [PlatformerGame](https://docs.unrealengine.com/latest/INT/Resources/SampleGames/PlatformerGame/) sample with its main module implemented with Nim.
+This repo contains [PlatformerGame](https://docs.unrealengine.com/latest/INT/Resources/SampleGames/PlatformerGame/) sample with its main game module implemented with Nim.
 
 This project can be used as a reference to see how certain features from UE4 map to Nim code.
 
@@ -16,6 +16,6 @@ To build this project:
 
 ## License
 
-*.nim files in the repo are licensed under the MIT license. See LICENSE file for details.
+\*.nim files in the repo are licensed under the MIT license. See LICENSE file for details.
 
-The content files (*.ini, *.uasset, *.umap) and C++ files (*.h, *.cpp) were created by Epic Games, Inc.
+The content files (\*.ini, \*.uasset, \*.umap) and C++ files (\*.h, \*.cpp) were created by Epic Games, Inc.
