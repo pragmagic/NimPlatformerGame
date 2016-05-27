@@ -37,3 +37,8 @@ task clean, "clean Nim and Unreal generated files":
   withDir nimUE4LibDir:
     exec "$# -e \"$#\" -d \"$#\" clean $#" %
       [uebuildPath, engineDir, getThisDir(), paramString()]
+
+task compilenim, "compile only Nim files, without invoking UBT":
+  withDir nimUE4LibDir:
+    exec "$# -e \"$#\" -d \"$#\" compilenim $#" %
+      [uebuildPath, engineDir, getThisDir(), paramString()]
