@@ -33,11 +33,11 @@ proc describeTime*(timeSeconds: float32, bShowSign: bool = true): FString =
   let absTimeSeconds = abs(timeSeconds)
   let isNegative = timeSeconds < 0
 
-  let totalSeconds: int32 = round(trunc(absTimeSeconds)) mod 3600
+  let totalSeconds: int32 = toInt(trunc(absTimeSeconds)) mod 3600
   let numMinutes: int32 = totalSeconds div 60
   let numSeconds: int32 = totalSeconds mod 60
 
-  let numMilliseconds = round(trunc((absTimeSeconds - trunc(absTimeSeconds)) * 1000.0))
+  let numMilliseconds = toInt(trunc((absTimeSeconds - trunc(absTimeSeconds)) * 1000.0))
 
   result = printfToFString(u16"%s%02d:%02d.%03d",
                             if bShowSign: (if isNegative: u16"-" else: u16"+") else: u16"",
