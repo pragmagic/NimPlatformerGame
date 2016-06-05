@@ -29,15 +29,15 @@ class FBorderTextures:
   var topBorder*: ptr UTexture2D
   var bottomBorder*: ptr UTexture2D
 
-proc describeTime*(timeSeconds: float32, bShowSign: bool = true): FString =
+proc timeToStr*(timeSeconds: float32, bShowSign: bool = true): FString =
   let absTimeSeconds = abs(timeSeconds)
   let isNegative = timeSeconds < 0
 
-  let totalSeconds: int32 = round(trunc(absTimeSeconds)) mod 3600
+  let totalSeconds: int32 = int32(trunc(absTimeSeconds)) mod 3600
   let numMinutes: int32 = totalSeconds div 60
   let numSeconds: int32 = totalSeconds mod 60
 
-  let numMilliseconds = round(trunc((absTimeSeconds - trunc(absTimeSeconds)) * 1000.0))
+  let numMilliseconds = int32(trunc((absTimeSeconds - trunc(absTimeSeconds)) * 1000.0))
 
   result = printfToFString(u16"%s%02d:%02d.%03d",
                             if bShowSign: (if isNegative: u16"-" else: u16"+") else: u16"",
@@ -132,7 +132,10 @@ uclass APlatformerHUD of AHUD:
 
     let game = getGameMode(this.getWorld())
     if game != nil:
+      # active messages
       drawActiveMessages()
+
+      # round timer
       let gameState = game.getGameState()
       let platformerPicture = game.getPlatformerPicture()
       if gameState == EGameState.Playing:
@@ -153,6 +156,7 @@ uclass APlatformerHUD of AHUD:
         platformerPicture.tick(this.canvas)
 
         if endingMessages.len > 0:
+          # first message with total time
           let endingMessagesScale = 1.6'f32
           let textMargin = 0.03'f32
           var strSizeX, strSizeY: float32
@@ -161,24 +165,26 @@ uclass APlatformerHUD of AHUD:
           strSizeY = strSizeY * endingMessagesScale * uiScale
 
           var textItem = initFCanvasTextItem(
-            initFVector2D((this.canvas.clipX - strSizeX) / 2.0'f32, drawY + sizeY * textMargin),
+            vec2d((this.canvas.clipX - strSizeX) / 2.0'f32, drawY + sizeY * textMargin),
             endingMessages[0].message.toText(), hudFont, whiteLinearColor)
-          textItem.scale = initFVector2D(endingMessagesScale * uiScale, endingMessagesScale * uiScale)
+          textItem.scale = vec2d(endingMessagesScale * uiScale, endingMessagesScale * uiScale)
           textItem.enableShadow(transparentLinearColor)
           this.canvas.drawItem(textItem)
 
+          # 2nd message will only be shown after making at least 2 runs
+          # displays time difference + NEW RECORD! or TRY AGAIN
           if endingMessages.len > 1:
             this.canvas.strLen(hudFont, endingMessages[1].message, strSizeX, strSizeY)
             strSizeX = strSizeX * endingMessagesScale * uiScale
             strSizeY = strSizeY * endingMessagesScale * uiScale
-            textItem.position = initFVector2D(
+            textItem.position = vec2d(
               (this.canvas.clipX - strSizeX) / 2.0'f32,
               drawY + sizeY * (1.0'f32 - textMargin) - strSizeY)
             textItem.text = endingMessages[1].message.toText()
             this.canvas.drawItem(textItem)
 
       if gameState == EGameState.Waiting or game.canBeRestarted():
-        let gameTime = round(trunc(1.0'f32 * this.getWorld().getTimeSeconds()))
+        let gameTime = int32(trunc(1.0'f32 * this.getWorld().getTimeSeconds()))
         let bShowInputMessage = (gameTime mod 2 == 0)
         if bShowInputMessage:
           var inputMessage: FString = u16"Jump or Slide"
@@ -209,9 +215,7 @@ uclass APlatformerHUD of AHUD:
       msgData.textScale = textScale
       msgData.bRedBorder = bRedBorder
 
-      let gameState = game.getGameState()
-
-      if gameState == EGameState.Finished:
+      if game.getGameState() == EGameState.Finished:
         endingMessages.add(msgData)
       else:
         if endingMessages.len > 0:
@@ -261,7 +265,7 @@ uclass APlatformerHUD of AHUD:
     let game = getGameMode(this.getWorld())
     if game != nil:
       let roundDuration = game.getRoundDuration()
-      let roundDurationText = u16"Time: " & describeTime(roundDuration, bShowSign = false)
+      let roundDurationText = u16"Time: " & timeToStr(roundDuration, bShowSign = false)
       drawMessage(roundDurationText, 0.5'f32, 0.1'f32, 1.0'f32, whiteLinearColor)
 
   proc displayRoundTimeModification*() =
@@ -269,7 +273,7 @@ uclass APlatformerHUD of AHUD:
     let currTime = this.getWorld().getTimeSeconds()
     if roundTimeModification != 0.0 and
        currTime - roundTimeModificationTime <= modificationDisplayDuration:
-      let displayText = describeTime(roundTimeModification, true)
+      let displayText = timeToStr(roundTimeModification, true)
       let delta = clamp((currTime - roundTimeModificationTime) / modificationDisplayDuration, 0.0'f32, 1.0'f32)
       let posY = 0.11'f32 + delta * 0.24'f32
 
@@ -286,7 +290,7 @@ uclass APlatformerHUD of AHUD:
       else:
         activeMessages.delete(i)
 
-  proc drawMessage*(message: FString; posX, posY: cfloat; textScale: cfloat;
+  proc drawMessage*(message: FString; posX, posY: cfloat; textScale: float32;
                     textColor: FLinearColor; bRedBorder: bool = false) =
     ## used to display single text message with specified parameters
     if this.canvas == nil: return
@@ -302,8 +306,8 @@ uclass APlatformerHUD of AHUD:
                0.4'f32,
                if bRedBorder: redBorder else: blueBorder)
 
-    var textItem = initFCanvasTextItem(initFVector2D(drawX, drawY), message.toText(), hudFont, textColor)
-    textItem.scale = initFVector2D(textScale * uiScale, textScale * uiScale)
+    var textItem = initFCanvasTextItem(vec2d(drawX, drawY), message.toText(), hudFont, textColor)
+    textItem.scale = vec2d(textScale * uiScale, textScale * uiScale)
     textItem.enableShadow(transparentLinearColor)
     this.canvas.drawItem(textItem)
 
@@ -433,7 +437,7 @@ uclass APlatformerHUD of AHUD:
 
     for i in 0..9:
       let texts = [(i + 1).toText() & u16".".toText(),
-                   describeTime(highscoreTimes[i], false).toText(),
+                   timeToStr(highscoreTimes[i], false).toText(),
                    highscoreNames[i].toText()]
       var offset = 0.0'f32
       for column in 0..2:

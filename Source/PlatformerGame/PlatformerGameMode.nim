@@ -37,10 +37,12 @@ uclass APlatformerGameMode of (AGameMode, IPlatformerGameModeInterface):
 
     this.playerControllerClass = APlatformerPlayerController.staticClass()
     this.defaultPawnClass = pawnClass
+    this.HUDClass = APlatformerHUD.staticClass()
 
     gameState = EGameState.Intro
     bRoundWasWon = false
     roundStartTime = 0.0
+    bIsGamePaused = false
 
     if gEngine != nil and gEngine.gameViewport != nil:
       gEngine.gameViewport.setSuppressTransitionMessage(true)
@@ -113,13 +115,13 @@ uclass APlatformerGameMode of (AGameMode, IPlatformerGameModeInterface):
       prepareRound(true)
       let timerManager = this.getWorldTimerManager()
       timerManager.setTimer(timerHandle_startRound, this, startRound, 2.0'f32, false)
-      bCanBeRestarted = true
+      bCanBeRestarted = false
 
   method saveCheckpointTime*(checkpointID: int32) {.override.} =
     ## save current time for checkpoint
     while checkpointID >= currentTimes.len:
       currentTimes.add(-1.0)
-    if checkpointID > 0:
+    if checkpointID >= 0:
       currentTimes[checkpointID] = getRoundDuration()
 
   method getCurrentCheckpointTime*(checkpointID: int32): float32 {.noSideEffect, override.} =

@@ -1,10 +1,10 @@
 import ue4
 
 uclass(APlatformerCharacterBase of ACharacter, Abstract):
-  method getCameraHeightChangeThreshold*(): cfloat =
+  method getCameraHeightChangeThreshold*(): cfloat {.thisConst.} =
     discard
 
-  method wantsToSlide*(): bool =
+  method wantsToSlide*(): bool {.thisConst.} =
     discard
 
   method playSlideStarted*() =

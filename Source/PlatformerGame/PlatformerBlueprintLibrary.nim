@@ -42,6 +42,7 @@ uclass UPlatformerBlueprintLibrary of UBlueprintFunctionLibrary:
           let currentTime = game.getCurrentCheckpointTime(checkpointID)
           result = currentTime - prevBestTime
 
+  UFunction(BlueprintPure, Category=Game, meta=(WorldContext="WorldContextObject")):
     proc getCurrentCheckpointTime*(worldContextObject: ptr UObject, checkpointID: int32): float32 {.isStatic.} =
       ## returns checkpoint time saved in current round
       let game = getGameFromCtx(worldContextObject)
@@ -102,10 +103,10 @@ uclass UPlatformerBlueprintLibrary of UBlueprintFunctionLibrary:
       if myHUD != nil:
         myHUD.showHighscorePrompt()
 
-  proc describeTime*(timeSeconds: float32, bShowSign: bool = true): FString {.
-    isStatic, bpCallable, category: "HUD".} =
+  UFunction(BlueprintPure, Category=HUD):
+    proc describeTime*(timeSeconds: float32, bShowSign: bool = true): FString {.isStatic.} =
       ## converts time to string in mm:ss.sss format
-      result = PlatformerHUD.describeTime(timeSeconds, bShowSign)
+      result = timeToStr(timeSeconds, bShowSign)
 
   proc sortHighscores*(inTimes: TArray[float32], inNames: TArray[FString], outTimes: var TArray[float32],
                        outNames: var TArray[FString], maxScores: int32) {.isStatic, bpCallable, category: "Game".} =

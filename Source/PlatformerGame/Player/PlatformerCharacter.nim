@@ -153,12 +153,12 @@ uclass APlatformerCharacter of APlatformerCharacterBase:
     this.bPressedJump = false
     bPressedSlide = false
 
-  proc isSliding*(): bool {.bpCallable, category: "Pawn|Character".} =
+  proc isSliding*(): bool {.bpCallable, category: "Pawn|Character", thisConst.} =
     ## returns true when pawn is sliding ; used in AnimBlueprint
     let moveComp = ueCast[UPlatformerPlayerMovementComp](this.getCharacterMovement())
     result = moveComp != nil and moveComp.isSliding()
 
-  proc wantsToSlide*(): bool {.override.} =
+  proc wantsToSlide*(): bool {.override, thisConst.} =
     ## gets bPressedSlide value
     result = bPressedSlide
 
@@ -198,7 +198,7 @@ uclass APlatformerCharacter of APlatformerCharacterBase:
       slideAC.stop()
       slideAC = nil
 
-  method getCameraHeightChangeThreshold*(): float32 {.override.}=
+  method getCameraHeightChangeThreshold*(): float32 {.override, thisConst.}=
     ## gets CameraHeightChangeThreshold value
     result = cameraHeightChangeThreshold
 

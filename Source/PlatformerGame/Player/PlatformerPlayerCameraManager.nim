@@ -28,7 +28,7 @@ uclass APlatformerPlayerCameraManager of APlayerCameraManager:
     currentCameraOffsetZ = 0.0
     cameraOffsetInterpSpeed = 5.0
 
-    cameraFixedRotation = initFRotator(0.0, -90.0, 0.0)
+    cameraFixedRotation = rot(0.0, -90.0, 0.0)
     fixedCameraOffsetZ = 130.0
 
   proc setFixedCameraOffsetZ*(inOffset: float32) {.bpCallable, category: "Game|Player".} =
@@ -39,7 +39,7 @@ uclass APlatformerPlayerCameraManager of APlayerCameraManager:
     ## sets new value of CurrentZoomAlpha <0, 1>
     currentZoomAlpha = clamp(zoomAlpha, 0.0, 1.0)
 
-  proc getCameraZoom*(): float32 {.bpCallable, category: "Game|Player".} =
+  proc getCameraZoom*(): float32 {.bpCallable, category: "Game|Player", thisConst.} =
     ## gets current value of CurrentZoomAlpha
     result = currentZoomAlpha
 

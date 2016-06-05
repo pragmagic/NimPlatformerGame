@@ -74,7 +74,7 @@ class FPlatformerOptions of FGameMenuPage:
     userSettings = ueCast[UPlatformerGameUserSettings](gEngine.getGameUserSettings())
     videoResolutionOption.get().selectedMultiChoice = getCurrentResolutionIndex(userSettings.get().getScreenResolution())
     fullScreenOption.get().selectedMultiChoice = if userSettings.get().getFullscreenMode() != EWindowMode.Windowed: 1 else: 0
-    soundVolumeOption.get().selectedMultiChoice = round(trunc(userSettings.getSoundVolume() * 10.0'f32))
+    soundVolumeOption.get().selectedMultiChoice = int32(trunc(userSettings.getSoundVolume() * 10.0'f32))
 
   proc applySettings*() =
     ## applies changes in game settings
@@ -116,5 +116,4 @@ class FPlatformerOptions of FGameMenuPage:
     ## try to match current resolution with selected index
     for i, resolution in platformerResolutions.pairs():
       if platformerResolutions[i] == currentRes:
-        result = i
-        break
+        return i
