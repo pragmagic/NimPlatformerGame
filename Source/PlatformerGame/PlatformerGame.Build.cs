@@ -35,7 +35,7 @@ public class PlatformerGame : ModuleRules
 		  "PlatformerGame/Private/UI/Menu",
 		});
 
-		var moduleDir = Path.GetDirectoryName(RulesCompiler.GetModuleFilename(this.GetType().Name));
+		var moduleDir = this.ModuleDirectory;
 		PrivateIncludePaths.Add(Path.Combine(Environment.GetEnvironmentVariable("NIM_HOME"), "lib"));
 		PublicIncludePaths.Add(Path.Combine(moduleDir, ".nimgen", "Public"));
 		PrivateIncludePaths.Add(Path.Combine(moduleDir, ".nimgen", "Private"));
