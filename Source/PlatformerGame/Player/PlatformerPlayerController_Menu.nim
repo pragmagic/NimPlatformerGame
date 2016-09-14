@@ -1,4 +1,4 @@
-import ue4
+import ue4, ue4gamemenubuilder
 
 import UI.Menu.PlatformerMainMenu
 

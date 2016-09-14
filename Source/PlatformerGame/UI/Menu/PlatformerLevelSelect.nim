@@ -1,4 +1,4 @@
-import ue4
+import ue4, ue4gamemenubuilder
 import lib/clibpp
 
 wclass(IPlatformerGameLoadingScreenModule, header: "PlatformerGameLoadingScreen.h"):

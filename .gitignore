@@ -15,6 +15,9 @@ profile_results.txt
 *.VC.opendb
 *.VC.db
 
+# VSCode generated files
+.vscode/.browse.*
+
 # Executables and obj files
 *.exe
 *.out
